@@ -1,0 +1,60 @@
+from sklearn.cluster import KMeans
+
+inertia = []
+
+K = range(1,11)
+
+for k in K:
+
+    km = KMeans(
+        n_clusters=k,
+        random_state=42,
+        n_init=10
+    )
+
+    km.fit(X_scaled)
+
+    inertia.append(km.inertia_)
+plt.figure(figsize=(8,5))
+
+plt.plot(
+    K,
+    inertia,
+    marker='o'
+)
+
+plt.xlabel("Number of Clusters")
+plt.ylabel("Inertia")
+
+plt.title("Elbow Method")
+
+plt.show()
+n_clusters = 3
+kmeans = KMeans(
+    n_clusters=3,
+    random_state=42,
+    n_init=10
+)
+
+df['cluster'] = kmeans.fit_predict(
+    X_scaled
+)
+print(
+    df['cluster'].value_counts()
+)
+plt.figure(figsize=(10,6))
+
+plt.scatter(
+    X_pca[:,0],
+    X_pca[:,1],
+    c=df['cluster'],
+    cmap='viridis',
+    s=2
+)
+
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+pd.crosstab(
+    df['cluster'],
+    df['isFraud']
+)
