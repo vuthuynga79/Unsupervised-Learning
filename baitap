@@ -1,0 +1,75 @@
+from google.colab import files
+
+uploaded = files.upload()
+import pandas as pd
+
+df = pd.read_csv('Nhatkychung.csv')
+
+df = df.drop(
+    columns=['id','nameOrig','nameDest'],
+    errors='ignore'
+)
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+
+df['type'] = le.fit_transform(df['type'])
+
+print(df[['type']].head())
+
+)
+df['amount_ratio'] = (
+    df['amount']
+    /(df['oldbalanceOrg']+1)
+)
+df['origin_diff'] = (
+    df['oldbalanceOrg']
+    - df['newbalanceOrig']
+)
+df['origin_diff'] = (
+    df['oldbalanceOrg']
+    - df['newbalanceOrig']
+)
+df['origin_error'] = abs(
+    df['amount']
+    - df['origin_diff']
+)
+df['dest_diff'] = (
+    df['newbalanceDest']
+    - df['oldbalanceDest']
+)
+df['dest_error'] = abs(
+    df['amount']
+    - df['dest_diff']
+)
+df['amount_balance_ratio'] = (
+    df['amount']
+    /(df['oldbalanceOrg']+1)
+)
+df['empty_account'] = (
+    df['newbalanceOrig']==0
+).astype(int)
+from scipy.stats import zscore
+
+df['amount_zscore'] = zscore(df['amount'])
+features = [
+    'step',
+    'type',
+    'amount',
+    'oldbalanceOrg',
+    'newbalanceOrig',
+    'oldbalanceDest',
+    'newbalanceDest',
+    'origin_error',
+    'dest_error',
+    'amount_balance_ratio',
+    'empty_account'
+]
+
+X = df[features]
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+
+X_scaled = scaler.fit_transform(X)
+print(X_scaled.shape)
