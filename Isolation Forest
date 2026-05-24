@@ -1,0 +1,66 @@
+from sklearn.ensemble import IsolationForest
+
+iso = IsolationForest(
+    contamination=0.001,
+    random_state=42
+)
+
+iso.fit(X_scaled)
+pred = iso.predict(X_scaled)
+df['anomaly'] = pred
+
+df['anomaly'] = df['anomaly'].map(
+    {
+        1:0,
+       -1:1
+    }
+)
+print(
+    df['anomaly'].value_counts()
+)
+plt.figure(figsize=(10,6))
+
+plt.scatter(
+    X_pca[:,0],
+    X_pca[:,1],
+    c=df['anomaly'],
+    s=2
+)
+
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+
+plt.title(
+    "Isolation Forest Anomaly Detection"
+)
+normal = df['anomaly']==0
+outlier = df['anomaly']==1
+
+plt.figure(figsize=(12,8))
+
+plt.scatter(
+    X_pca[normal,0],
+    X_pca[normal,1],
+    s=1,
+    alpha=0.3,
+    label='Normal'
+)
+
+plt.scatter(
+    X_pca[outlier,0],
+    X_pca[outlier,1],
+    s=20,
+    label='Anomaly'
+)
+
+plt.legend()
+
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+
+plt.title(
+    "Detected Accounting Anomalies"
+)
+
+plt.show()
+plt.show()
